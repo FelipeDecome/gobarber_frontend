@@ -1,18 +1,14 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { isToday, format, parseISO, isAfter } from 'date-fns';
 import ptBR from 'date-fns/locale/pt-BR';
-import { FiClock, FiPower } from 'react-icons/fi';
+import { FiClock } from 'react-icons/fi';
 import DayPicker, { DayModifiers } from 'react-day-picker';
 import 'react-day-picker/lib/style.css';
 
-import { Link } from 'react-router-dom';
 import { useAuth } from '../../hooks/auth';
 
 import {
   Container,
-  Header,
-  HeaderContent,
-  Profile,
   Content,
   Schedule,
   NextAppointment,
@@ -21,9 +17,9 @@ import {
   Calendar,
 } from './styles';
 
-import logoImg from '../../assets/images/logo.svg';
 import api from '../../services/api';
 import { findNextAvailableDate } from '../../utils/findNextAvailableDate';
+import Header from './Header';
 
 interface IUser {
   name: string;
@@ -51,7 +47,7 @@ const Dashboard: React.FC = () => {
     IMonthAvailabilityItem[]
   >([]);
 
-  const { signOut, user } = useAuth();
+  const { user } = useAuth();
 
   const handleDateChange = useCallback((day: Date, modifiers: DayModifiers) => {
     if (modifiers.available && !modifiers.disabled) setSelectedDate(day);
@@ -133,26 +129,7 @@ const Dashboard: React.FC = () => {
 
   return (
     <Container>
-      <Header>
-        <HeaderContent>
-          <img src={logoImg} alt="GoBarber" />
-
-          <Profile>
-            <img src={user.avatar_url} alt="Felipe Decome" />
-
-            <div>
-              <span>Bem-vindo,</span>
-              <Link to="/profile" title="Ver meu perfil">
-                <strong>{user.name}</strong>
-              </Link>
-            </div>
-          </Profile>
-
-          <button title="Sair" type="button" onClick={signOut}>
-            <FiPower />
-          </button>
-        </HeaderContent>
-      </Header>
+      <Header />
 
       <Content>
         <Schedule>
