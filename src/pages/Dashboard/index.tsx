@@ -1,12 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import {
-  isToday,
-  format,
-  parseISO,
-  isAfter,
-  isSaturday,
-  isSunday,
-} from 'date-fns';
+import { isToday, format, parseISO, isAfter } from 'date-fns';
 import ptBR from 'date-fns/locale/pt-BR';
 import { FiClock, FiPower } from 'react-icons/fi';
 import DayPicker, { DayModifiers } from 'react-day-picker';
@@ -30,6 +23,7 @@ import {
 
 import logoImg from '../../assets/images/logo.svg';
 import api from '../../services/api';
+import { findNextAvailableDate } from '../../utils/findNextAvailableDate';
 
 interface IUser {
   name: string;
@@ -50,14 +44,7 @@ interface IMonthAvailabilityItem {
 
 const Dashboard: React.FC = () => {
   const [appointments, setAppointments] = useState<IAppointment[]>([]);
-  const [selectedDate, setSelectedDate] = useState(() => {
-    const date = new Date();
-
-    if (isSaturday(date)) return new Date(date.setDate(date.getDate() + 2));
-    if (isSunday(date)) return new Date(date.setDate(date.getDate() + 1));
-
-    return date;
-  });
+  const [selectedDate, setSelectedDate] = useState(findNextAvailableDate);
   const [currentMonth, setCurrentMonth] = useState(new Date());
 
   const [monthAvailability, setMonthAvailability] = useState<
@@ -155,13 +142,13 @@ const Dashboard: React.FC = () => {
 
             <div>
               <span>Bem-vindo,</span>
-              <Link to="/profile">
+              <Link to="/profile" title="Ver meu perfil">
                 <strong>{user.name}</strong>
               </Link>
             </div>
           </Profile>
 
-          <button type="button" onClick={signOut}>
+          <button title="Sair" type="button" onClick={signOut}>
             <FiPower />
           </button>
         </HeaderContent>
