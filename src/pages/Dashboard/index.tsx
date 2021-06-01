@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { isToday, format, parseISO, isAfter } from 'date-fns';
 import ptBR from 'date-fns/locale/pt-BR';
 import { FiClock } from 'react-icons/fi';
-import DayPicker, { DayModifiers } from 'react-day-picker';
+import { DayModifiers } from 'react-day-picker';
 import 'react-day-picker/lib/style.css';
 
 import { useAuth } from '../../hooks/auth';
@@ -14,12 +14,12 @@ import {
   NextAppointment,
   Section,
   Appointment,
-  Calendar,
 } from './styles';
 
 import api from '../../services/api';
 import { findNextAvailableDate } from '../../utils/findNextAvailableDate';
 import Header from './Header';
+import Calendar from './Calendar';
 
 interface IUser {
   name: string;
@@ -40,7 +40,7 @@ interface IMonthAvailabilityItem {
 
 const Dashboard: React.FC = () => {
   const [appointments, setAppointments] = useState<IAppointment[]>([]);
-  const [selectedDate, setSelectedDate] = useState(findNextAvailableDate);
+  const [selectedDate, setSelectedDate] = useState<Date>(findNextAvailableDate);
   const [currentMonth, setCurrentMonth] = useState(new Date());
 
   const [monthAvailability, setMonthAvailability] = useState<
@@ -211,38 +211,12 @@ const Dashboard: React.FC = () => {
             ))}
           </Section>
         </Schedule>
-        <Calendar>
-          <DayPicker
-            weekdaysShort={['D', 'S', 'T', 'Q', 'Q', 'S', 'S']}
-            fromMonth={new Date()}
-            disabledDays={[
-              {
-                daysOfWeek: [0, 6],
-              },
-              ...disabledDays,
-            ]}
-            modifiers={{
-              available: { daysOfWeek: [1, 2, 3, 4, 5] },
-            }}
-            onMonthChange={handleMonthChange}
-            selectedDays={selectedDate}
-            onDayClick={handleDateChange}
-            months={[
-              'Janeiro',
-              'Fevereiro',
-              'Março',
-              'Abril',
-              'Maio',
-              'Junho',
-              'Julho',
-              'Agosto',
-              'Setembro',
-              'Outubro',
-              'Novembro',
-              'Dezembro',
-            ]}
-          />
-        </Calendar>
+        <Calendar
+          selectedDate={selectedDate}
+          disabledDays={disabledDays}
+          handleDateChange={handleDateChange}
+          handleMonthChange={handleMonthChange}
+        />
       </Content>
     </Container>
   );
